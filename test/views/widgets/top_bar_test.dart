@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 import 'package:railtime/styles/themes.dart';
-import 'package:railtime/view/widgets/top_bar.dart';
-
-class MockNavigatorObserver extends Mock implements NavigatorObserver {}
+import 'package:railtime/views/widgets/top_bar.dart';
 
 void main() {
   testWidgets('TopBar with only title', (WidgetTester tester) async {
