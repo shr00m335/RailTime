@@ -16,5 +16,12 @@ ThemeData get lightTheme {
         TextStyle(color: Colors.white, fontSize: 20.0),
       ),
     ),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      backgroundColor: AppColors.blue,
+      unselectedLabelStyle: TextStyle(fontFamily: 'LondonTube'),
+      selectedLabelStyle: TextStyle(fontFamily: 'LondonTube'),
+      unselectedItemColor: Color.fromARGB(255, 179, 179, 179),
+      selectedItemColor: Colors.white,
+    ),
   );
 }
