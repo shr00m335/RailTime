@@ -42,8 +42,4 @@ class DatabaseRepository {
     }
     return await openDatabase(path);
   }
-
-  Future<void> test() async {
-    await database;
-  }
 }
