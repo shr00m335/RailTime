@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
+import 'package:railtime/model/lat_lon.dart';
 import 'package:railtime/model/line_model.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -76,5 +77,25 @@ class DatabaseRepository {
     return queryResult
         .map((dbMap) => LineModel.fromDatabaseMap(dbMap))
         .toList();
+  }
+
+  // Stations
+
+  /// Get all station locations in latitude and longtitude
+  Future<Map<String, LatLon>> getAllStationsLocation() async {
+    final Database db = await database;
+
+    final List<dynamic> queryResult = await db.query(
+      'Stations',
+      columns: ['id', 'lat', 'lon'],
+    );
+
+    return {
+      for (Map<String, dynamic> dbMap in queryResult)
+        dbMap['id'].toString(): LatLon(
+          double.parse(dbMap['lat'].toString()),
+          double.parse(dbMap['lon'].toString()),
+        ),
+    };
   }
 }
