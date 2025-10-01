@@ -1,0 +1,1 @@
+enum DistanceUnit { metric, imperial }
