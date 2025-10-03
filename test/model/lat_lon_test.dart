@@ -11,4 +11,36 @@ void main() {
       expect(double.parse(distance.toStringAsFixed(1)), 5574.8);
     });
   });
+
+  group('closeTo Tests', () {
+    test('latlon1 closer', () {
+      LatLon baseLatLon = LatLon(
+        51.532528,
+        -0.139252,
+      ); // Location near Mornington Crescent
+      LatLon latlon1 = LatLon(51.534679, -0.138789); // Mornington Crescent
+      LatLon latlon2 = LatLon(51.528344, -0.1323); // Euston
+      LatLon result = baseLatLon.closerTo(latlon1, latlon2);
+      expect(result, latlon1);
+    });
+
+    test('latlon2 closer', () {
+      LatLon baseLatLon = LatLon(51.530389, -0.134214); // Location near Euston
+      LatLon latlon1 = LatLon(51.534679, -0.138789); // Mornington Crescent
+      LatLon latlon2 = LatLon(51.528344, -0.1323); // Euston
+      LatLon result = baseLatLon.closerTo(latlon1, latlon2);
+      expect(result, latlon2);
+    });
+
+    test('latlon1 and latlon2 have same distance', () {
+      LatLon baseLatLon = LatLon(51.530389, -0.134214);
+      LatLon latlon1 = LatLon(51.534679, -0.138789);
+      LatLon latlon2 = LatLon(51.534679, 0.138789);
+      LatLon result = baseLatLon.closerTo(latlon1, latlon2);
+      expect(
+        result,
+        latlon1,
+      ); // Should return latlon1 if two distances are the same
+    });
+  });
 }

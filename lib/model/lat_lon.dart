@@ -37,4 +37,20 @@ class LatLon {
 
     return R * c;
   }
+
+  /// Given two [LatLon], [latlon1] and [latlon2], return the [LatLon] that is close to the the current [LatLon]
+  ///
+  /// Return the closer [LatLon],
+  /// if two distances are the same, return [latlon1]
+  ///
+  /// This function uses squared Euclidean distance
+  LatLon closerTo(LatLon latlon1, LatLon latlon2) {
+    double dLatLon1 =
+        (math.pow(latlon1.latitude - latitude, 2) as double) +
+        (math.pow(latlon1.longtitude - longtitude, 2) as double);
+    double dLatLon2 =
+        (math.pow(latlon2.latitude - latitude, 2) as double) +
+        (math.pow(latlon2.longtitude - longtitude, 2) as double);
+    return dLatLon1 <= dLatLon2 ? latlon1 : latlon2;
+  }
 }
