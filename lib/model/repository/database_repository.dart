@@ -1,9 +1,11 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
 import 'package:railtime/model/lat_lon.dart';
 import 'package:railtime/model/line_model.dart';
+import 'package:railtime/model/station_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 /// A singleton class that handles CRUD operaion of the database
@@ -81,14 +83,53 @@ class DatabaseRepository {
 
   // Stations
 
-  /// Get all station locations in latitude and longtitude
-  Future<Map<String, LatLon>> getAllStationsLocation() async {
+  /// Get the station of the given [stationId], null if no station if found
+  Future<StationModel?> getStationById(String stationId) async {
     final Database db = await database;
 
     final List<dynamic> queryResult = await db.query(
       'Stations',
-      columns: ['id', 'lat', 'lon'],
+      columns: ['*'],
+      where: 'id = ?',
+      whereArgs: [stationId],
     );
+
+    if (queryResult.isEmpty) return null;
+
+    final List<LineModel> lines = await getLinesOfStationId(stationId);
+
+    return StationModel.fromDatabaseMap(queryResult.first, lines);
+  }
+
+  /// Get all station locations in latitude and longtitude
+  Future<Map<String, LatLon>> getAllStationsLocation({
+    LatLon? center,
+    LatLon? delta,
+  }) async {
+    final Database db = await database;
+
+    List<dynamic> queryResult;
+
+    if (center != null && delta != null) {
+      double lat1 = center.latitude - delta.latitude;
+      double lat2 = center.latitude + delta.latitude;
+      double lon1 = center.longtitude - delta.longtitude;
+      double lon2 = center.longtitude + delta.longtitude;
+
+      queryResult = await db.query(
+        'Stations',
+        columns: ['id', 'lat', 'lon'],
+        where: '(lat BETWEEN ? AND ?) AND (lon BETWEEN ? AND ?)',
+        whereArgs: [
+          min(lat1, lat2),
+          max(lat1, lat2),
+          min(lon1, lon2),
+          max(lon1, lon2),
+        ],
+      );
+    } else {
+      queryResult = await db.query('Stations', columns: ['id', 'lat', 'lon']);
+    }
 
     return {
       for (Map<String, dynamic> dbMap in queryResult)

@@ -54,5 +54,14 @@ void main() {
       expect(575, locations.length); // Expect all stations (575)
       expect(LatLon(51.522883, -0.15713), locations['940GZZLUBST']);
     });
+
+    test('fetch all station locations within bounding box', () async {
+      final locations = await repository.getAllStationsLocation(
+        center: LatLon(51.522883, -0.15713),
+        delta: LatLon(0.0001, 0.0001),
+      );
+      expect(1, locations.length); // Expect only 1 station
+      expect(LatLon(51.522883, -0.15713), locations['940GZZLUBST']);
+    });
   });
 }
