@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:railtime/enums/app_enums.dart';
 import 'package:railtime/model/lat_lon.dart';
 
 void main() {
@@ -41,6 +42,47 @@ void main() {
         result,
         latlon1,
       ); // Should return latlon1 if two distances are the same
+    });
+  });
+
+  group('getBoundingBoxDelta Tests', () {
+    test('test getBoundingBoxDelta in km', () {
+      LatLon baseLatLon = LatLon(51.530389, -0.134214);
+      LatLon targetLatLon = LatLon(
+        51.536926,
+        -0.142465,
+      ); // A point within the 2km distance
+
+      LatLon delta = baseLatLon.getBoundingBoxDelta(2);
+      expect(
+        targetLatLon.latitude - baseLatLon.latitude < delta.latitude,
+        true,
+      );
+      expect(
+        targetLatLon.longtitude - baseLatLon.longtitude < delta.longtitude,
+        true,
+      );
+    });
+
+    test('test getBoundingBoxDelta in miles', () {
+      LatLon baseLatLon = LatLon(51.530389, -0.134214);
+      LatLon targetLatLon = LatLon(
+        51.544695,
+        -0.154358,
+      ); // A point within the 2 miles distance
+
+      LatLon delta = baseLatLon.getBoundingBoxDelta(
+        2,
+        unit: DistanceUnit.imperial,
+      );
+      expect(
+        targetLatLon.latitude - baseLatLon.latitude < delta.latitude,
+        true,
+      );
+      expect(
+        targetLatLon.longtitude - baseLatLon.longtitude < delta.longtitude,
+        true,
+      );
     });
   });
 }

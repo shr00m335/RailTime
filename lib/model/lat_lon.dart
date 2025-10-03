@@ -53,4 +53,22 @@ class LatLon {
         (math.pow(latlon2.longtitude - longtitude, 2) as double);
     return dLatLon1 <= dLatLon2 ? latlon1 : latlon2;
   }
+
+  /// Get a rough approximation of a bound box that has a [distance] away from the current [LatLon]
+  ///
+  /// current [LatLon] as the center
+  ///
+  /// [distance] is the distance from the center to the edges of the bounding box
+  /// [unit] is either metric (km) of imperial (miles)
+  ///
+  /// Return a LatLon that stores the delta to the edges of bounding box
+  LatLon getBoundingBoxDelta(
+    double distance, {
+    DistanceUnit unit = DistanceUnit.metric,
+  }) {
+    double distancePerLat = unit == DistanceUnit.imperial ? 69.054 : 111.32;
+    double distancePerLon = distancePerLat * math.cos(latitude * math.pi / 180);
+
+    return LatLon(distance / distancePerLat, distance / distancePerLon);
+  }
 }
