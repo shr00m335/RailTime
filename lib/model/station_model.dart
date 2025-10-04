@@ -1,21 +1,14 @@
+import 'package:railtime/model/lat_lon.dart';
 import 'package:railtime/model/line_model.dart';
 
 class StationModel {
   final String id;
   final String name;
   final List<LineModel> lines;
-  final double latitude;
-  final double longtitude;
+  final LatLon location;
   final String parentId;
 
-  StationModel(
-    this.id,
-    this.name,
-    this.lines,
-    this.latitude,
-    this.longtitude,
-    this.parentId,
-  );
+  StationModel(this.id, this.name, this.lines, this.location, this.parentId);
 
   /// A function to convert the result query from the database to a [StationModel]
   ///
@@ -28,8 +21,7 @@ class StationModel {
       dbMap['id'],
       dbMap['name'],
       lines,
-      dbMap['lat'],
-      dbMap['lon'],
+      LatLon(dbMap['lat'], dbMap['lon']),
       dbMap['parent'],
     );
   }
