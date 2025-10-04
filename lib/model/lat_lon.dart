@@ -4,18 +4,18 @@ import 'package:railtime/enums/app_enums.dart';
 
 class LatLon {
   final double latitude;
-  final double longtitude;
+  final double longitude;
 
-  const LatLon(this.latitude, this.longtitude);
+  const LatLon(this.latitude, this.longitude);
 
   @override
   operator ==(other) =>
       other is LatLon &&
       latitude == other.latitude &&
-      longtitude == other.longtitude;
+      longitude == other.longitude;
 
   @override
-  int get hashCode => Object.hash(latitude, longtitude);
+  int get hashCode => Object.hash(latitude, longitude);
 
   /// Calculate the distance between this LatLon and the target LatLon
   double distanceTo(LatLon target, {DistanceUnit unit = DistanceUnit.metric}) {
@@ -24,8 +24,8 @@ class LatLon {
     // Haversin Formula
     double lat1 = latitude * math.pi / 180;
     double lat2 = target.latitude * math.pi / 180;
-    double lon1 = longtitude * math.pi / 180;
-    double lon2 = target.longtitude * math.pi / 180;
+    double lon1 = longitude * math.pi / 180;
+    double lon2 = target.longitude * math.pi / 180;
 
     double dLon = lon2 - lon1;
     double dLat = lat2 - lat1;
@@ -47,10 +47,10 @@ class LatLon {
   LatLon closerTo(LatLon latlon1, LatLon latlon2) {
     double dLatLon1 =
         (math.pow(latlon1.latitude - latitude, 2) as double) +
-        (math.pow(latlon1.longtitude - longtitude, 2) as double);
+        (math.pow(latlon1.longitude - longitude, 2) as double);
     double dLatLon2 =
         (math.pow(latlon2.latitude - latitude, 2) as double) +
-        (math.pow(latlon2.longtitude - longtitude, 2) as double);
+        (math.pow(latlon2.longitude - longitude, 2) as double);
     return dLatLon1 <= dLatLon2 ? latlon1 : latlon2;
   }
 

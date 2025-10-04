@@ -59,7 +59,7 @@ void main() {
         true,
       );
       expect(
-        targetLatLon.longtitude - baseLatLon.longtitude < delta.longtitude,
+        targetLatLon.longitude - baseLatLon.longitude < delta.longitude,
         true,
       );
     });
@@ -80,7 +80,7 @@ void main() {
         true,
       );
       expect(
-        targetLatLon.longtitude - baseLatLon.longtitude < delta.longtitude,
+        targetLatLon.longitude - baseLatLon.longitude < delta.longitude,
         true,
       );
     });

@@ -101,7 +101,7 @@ class DatabaseRepository {
     return StationModel.fromDatabaseMap(queryResult.first, lines);
   }
 
-  /// Get all station locations in latitude and longtitude
+  /// Get all station locations in latitude and longitude
   Future<Map<String, LatLon>> getAllStationsLocation({
     LatLon? center,
     LatLon? delta,
@@ -113,8 +113,8 @@ class DatabaseRepository {
     if (center != null && delta != null) {
       double lat1 = center.latitude - delta.latitude;
       double lat2 = center.latitude + delta.latitude;
-      double lon1 = center.longtitude - delta.longtitude;
-      double lon2 = center.longtitude + delta.longtitude;
+      double lon1 = center.longitude - delta.longitude;
+      double lon2 = center.longitude + delta.longitude;
 
       queryResult = await db.query(
         'Stations',
