@@ -3,8 +3,15 @@ import 'package:railtime/model/line_model.dart';
 
 class LineIcon extends StatelessWidget {
   final LineModel line;
+  final double size;
+  final bool disabled;
 
-  const LineIcon({super.key, required this.line});
+  const LineIcon({
+    super.key,
+    required this.line,
+    required this.size,
+    this.disabled = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,10 +20,10 @@ class LineIcon extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
-          color: line.color,
+          color: disabled ? Theme.of(context).disabledColor : line.color,
           border: Border.all(
             color:
-                line.color.computeLuminance() > 0.1
+                disabled || line.color.computeLuminance() > 0.1
                     ? Colors.transparent
                     : Colors.white,
             width: 1,
@@ -27,11 +34,13 @@ class LineIcon extends StatelessWidget {
           child: Text(
             line.abbreviation,
             style: TextStyle(
-              fontSize: 16.0,
+              fontSize: size,
               color:
-                  line.color.computeLuminance() > 0.5
-                      ? Colors.black
-                      : Colors.white,
+                  disabled
+                      ? Colors.white
+                      : (line.color.computeLuminance() > 0.5
+                          ? Colors.black
+                          : Colors.white),
             ),
           ),
         ),
