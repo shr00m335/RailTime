@@ -11,6 +11,8 @@ ThemeData get lightTheme {
     primaryColor: AppColors.blue,
     scaffoldBackgroundColor: Color(0xFFDEDEDE),
     indicatorColor: Colors.white,
+    cardColor: Colors.white,
+    disabledColor: Color.fromARGB(255, 179, 179, 179),
     textTheme: TextTheme(
       headlineLarge: londonTubeFont(
         TextStyle(color: Colors.white, fontSize: 24.0),
