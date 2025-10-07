@@ -9,6 +9,7 @@ ThemeData get lightTheme {
   return ThemeData(
     fontFamily: 'LondonTube',
     primaryColor: AppColors.blue,
+    scaffoldBackgroundColor: Color(0xFFDEDEDE),
     indicatorColor: Colors.white,
     textTheme: TextTheme(
       headlineLarge: londonTubeFont(
@@ -19,10 +20,7 @@ ThemeData get lightTheme {
       ),
       bodyLarge: TextStyle(color: Colors.black, fontSize: 24.0),
       bodyMedium: TextStyle(color: Colors.black, fontSize: 20.0),
-      labelSmall: TextStyle(
-        color: Color.fromARGB(255, 136, 136, 136),
-        fontSize: 14.0,
-      ),
+      labelSmall: TextStyle(color: Color(0xFF888888), fontSize: 14.0),
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: AppColors.blue,
