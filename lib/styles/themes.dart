@@ -9,6 +9,7 @@ ThemeData get lightTheme {
   return ThemeData(
     fontFamily: 'LondonTube',
     primaryColor: AppColors.blue,
+    indicatorColor: Colors.white,
     textTheme: TextTheme(
       headlineLarge: londonTubeFont(
         TextStyle(color: Colors.white, fontSize: 24.0),
