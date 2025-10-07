@@ -87,4 +87,33 @@ void main() {
       expect(stations['940GZZLUQPS']!.name, 'Queen\'s Park');
     });
   });
+
+  group('getStationSequenceOnLine Tests', () {
+    test('Test with empty station list', () async {
+      final Map<String, int> sequences = await repository
+          .getStationsSequencesOnLine('bakerloo', []);
+      expect(sequences, {});
+    });
+    test('Test with non-existing line id', () async {
+      final Map<String, int> sequences = await repository
+          .getStationsSequencesOnLine('test line', ['940GZZLUMVL']);
+      expect(sequences, {});
+    });
+    test('Test with non-existing stations', () async {
+      final Map<String, int> sequences = await repository
+          .getStationsSequencesOnLine('bakerloo', ['123']);
+      expect(sequences, {});
+    });
+    test('Test with Bakerloo', () async {
+      final Map<String, int> sequences = await repository
+          .getStationsSequencesOnLine('bakerloo', [
+            '940GZZLUKEN',
+            '940GZZLUMVL',
+            '910GWATFDHS',
+          ]);
+      expect(sequences.length, 2);
+      expect(sequences['940GZZLUKEN'], 24);
+      expect(sequences['940GZZLUMVL'], 14);
+    });
+  });
 }

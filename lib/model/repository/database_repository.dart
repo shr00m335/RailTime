@@ -167,4 +167,26 @@ class DatabaseRepository {
         ),
     };
   }
+
+  /// Get a list of stopping sequence of [stationIds] on [lineId]
+  ///
+  /// Return a map in the format of {[stationId]: sequence}
+  Future<Map<String, int>> getStationsSequencesOnLine(
+    String lineId,
+    List<String> stationIds,
+  ) async {
+    if (stationIds.isEmpty) return {};
+    final Database db = await database;
+    final List<dynamic> queryResult = await db.query(
+      'Routes',
+      columns: ['station_id', 'sequence'],
+      where:
+          'line_id = ? AND station_id in (${DatabaseUtils.generateInParameters(stationIds)})',
+      whereArgs: [lineId, ...stationIds],
+    );
+    return {
+      for (Map<String, dynamic> dbMap in queryResult)
+        dbMap['station_id'].toString(): dbMap['sequence'],
+    };
+  }
 }
