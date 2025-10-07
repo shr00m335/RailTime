@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:railtime/styles/themes.dart';
+import 'package:railtime/view_model/live_info_view_model.dart';
 import 'package:railtime/views/screens/live_info_page.dart';
 import 'package:railtime/views/widgets/bottom_nav_bar.dart';
 
@@ -16,7 +18,10 @@ class MainApp extends StatefulWidget {
 
 class _MainAppState extends State<MainApp> {
   final List<Widget> _pages = [
-    LiveInfoPage(),
+    ChangeNotifierProvider(
+      create: (_) => LiveInfoViewModel(),
+      child: Builder(builder: (context) => LiveInfoPage()),
+    ),
     Placeholder(),
     Placeholder(),
     Placeholder(),
