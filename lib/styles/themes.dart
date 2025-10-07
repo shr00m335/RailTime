@@ -7,6 +7,7 @@ TextStyle londonTubeFont(TextStyle style) {
 
 ThemeData get lightTheme {
   return ThemeData(
+    fontFamily: 'LondonTube',
     primaryColor: AppColors.blue,
     textTheme: TextTheme(
       headlineLarge: londonTubeFont(
