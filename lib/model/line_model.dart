@@ -4,6 +4,7 @@ import 'package:railtime/utils/color_utils.dart';
 class LineModel {
   final String id;
   final String name;
+  final String abbreviation;
   final String mode;
   final Color color;
   final String direction0;
@@ -14,6 +15,7 @@ class LineModel {
   const LineModel(
     this.id,
     this.name,
+    this.abbreviation,
     this.mode,
     this.color,
     this.direction0,
@@ -29,6 +31,7 @@ class LineModel {
     return LineModel(
       dbMap['id'],
       dbMap['name'],
+      dbMap['abbreviation'],
       dbMap['mode'],
       ColorUtils.uint24ToColor(dbMap['color']),
       dbMap['direction_0'],
