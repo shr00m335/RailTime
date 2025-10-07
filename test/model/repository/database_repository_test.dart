@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 import 'package:railtime/model/lat_lon.dart';
 import 'package:railtime/model/repository/database_repository.dart';
+import 'package:railtime/model/station_model.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
@@ -62,6 +63,28 @@ void main() {
       );
       expect(1, locations.length); // Expect only 1 station
       expect(LatLon(51.522883, -0.15713), locations['940GZZLUBST']);
+    });
+  });
+
+  group('getStationsByIds Tests', () {
+    test('Test with empty list of ids', () async {
+      final Map<String, StationModel> stations = await repository
+          .getStationsByIds([]);
+      expect(stations, {});
+    });
+    test('Test with 1 id', () async {
+      final Map<String, StationModel> stations = await repository
+          .getStationsByIds(['940GZZLUMVL']);
+      expect(stations.length, 1);
+      expect(stations['940GZZLUMVL']!.name, 'Maida Vale');
+    });
+    test('Test with 3 ids', () async {
+      final Map<String, StationModel> stations = await repository
+          .getStationsByIds(['940GZZLUMVL', '940GZZLUSGP', '940GZZLUQPS']);
+      expect(stations.length, 3);
+      expect(stations['940GZZLUMVL']!.name, 'Maida Vale');
+      expect(stations['940GZZLUSGP']!.name, 'Stonebridge Park');
+      expect(stations['940GZZLUQPS']!.name, 'Queen\'s Park');
     });
   });
 }

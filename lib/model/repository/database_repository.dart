@@ -6,6 +6,7 @@ import 'package:path/path.dart' as p;
 import 'package:railtime/model/lat_lon.dart';
 import 'package:railtime/model/line_model.dart';
 import 'package:railtime/model/station_model.dart';
+import 'package:railtime/utils/database_utils.dart';
 import 'package:sqflite/sqflite.dart';
 
 /// A singleton class that handles CRUD operaion of the database
@@ -136,6 +137,33 @@ class DatabaseRepository {
         dbMap['id'].toString(): LatLon(
           double.parse(dbMap['lat'].toString()),
           double.parse(dbMap['lon'].toString()),
+        ),
+    };
+  }
+
+  /// Get all stations with the given [stationIds]
+  ///
+  /// Return in key pair, key: station id and value: station model
+  Future<Map<String, StationModel>> getStationsByIds(
+    List<String> stationIds,
+  ) async {
+    final Database db = await database;
+    final List<dynamic> queryResult = await db.query(
+      'Stations',
+      columns: ['*'],
+      where: 'id IN (${DatabaseUtils.generateInParameters(stationIds)})',
+      whereArgs: stationIds,
+    );
+    final Map<String, List<LineModel>> lines = {
+      for (String stationId in stationIds)
+        stationId: await getLinesOfStationId(stationId),
+    };
+
+    return {
+      for (Map<String, dynamic> dbMap in queryResult)
+        dbMap['id'].toString(): StationModel.fromDatabaseMap(
+          dbMap,
+          lines[dbMap['id'].toString()]!,
         ),
     };
   }
