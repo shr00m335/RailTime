@@ -17,6 +17,12 @@ ThemeData get lightTheme {
       headlineMedium: londonTubeFont(
         TextStyle(color: Colors.white, fontSize: 20.0),
       ),
+      bodyLarge: TextStyle(color: Colors.black, fontSize: 24.0),
+      bodyMedium: TextStyle(color: Colors.black, fontSize: 20.0),
+      labelSmall: TextStyle(
+        color: Color.fromARGB(255, 136, 136, 136),
+        fontSize: 14.0,
+      ),
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: AppColors.blue,
