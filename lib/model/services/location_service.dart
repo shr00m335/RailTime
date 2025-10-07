@@ -35,16 +35,19 @@ class LocationService {
       return null;
     }
     // Get current location
-    Position location = await Geolocator.getCurrentPosition(
+    await for (Position position in Geolocator.getPositionStream(
       locationSettings: AndroidSettings(
-        accuracy: LocationAccuracy.medium,
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 0,
         timeLimit: Duration(seconds: 10),
-        forceLocationManager: true,
       ),
-    );
+    )) {
+      return LatLon(
+        position.latitude,
+        position.longitude,
+      ); // Return the first fresh position
+    }
 
-    print(location.latitude);
-    print(location.longitude);
-    return LatLon(location.latitude, location.longitude);
+    return null;
   }
 }
