@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 ///
 /// The height of the top bar is determined by whether a subtitle is provided. It will be either 50px without subtitle or 100px with subtitle
 class TopBar extends StatelessWidget {
-  final String title;
+  final Widget title;
   final Widget? subtitle;
   final bool backVisible;
 
@@ -63,13 +63,10 @@ class TopBar extends StatelessWidget {
                       ),
                     ),
                     SizedBox(width: 10.0),
-                    Text(
-                      title,
-                      style: Theme.of(context).textTheme.headlineLarge,
-                    ),
+                    title,
                   ],
                 )
-                : Text(title, style: Theme.of(context).textTheme.headlineLarge),
+                : title,
             if (subtitle != null) subtitle!,
           ],
         ),
