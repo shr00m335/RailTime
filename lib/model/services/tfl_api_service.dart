@@ -47,8 +47,7 @@ class TflApiService {
                 station.lines.firstWhere((line) => line.id == dbMap['lineId']),
                 destinations[dbMap['destinationNaptanId']],
                 directions[dbMap['lineId']
-                        .toString()]?[dbMap['destinationNaptanId']] ??
-                    -1,
+                    .toString()]?[dbMap['destinationNaptanId']],
               ),
             )
             .toList();
@@ -57,7 +56,16 @@ class TflApiService {
 
     return {
       for (LineModel line in station.lines)
-        line.id: arrivals.where((x) => x.line.id == line.id).toList(),
+        line.id:
+            arrivals
+                .where(
+                  (x) =>
+                      x.line.id == line.id &&
+                      x.line.id != 'circle' &&
+                      x.destination?.id !=
+                          '940GZZLUERC', // Add edge case where circle mislabeled as other line in API
+                )
+                .toList(),
     };
   }
 }
