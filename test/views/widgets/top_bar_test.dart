@@ -5,7 +5,9 @@ import 'package:railtime/views/widgets/top_bar.dart';
 
 void main() {
   testWidgets('TopBar with only title', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: TopBar(title: 'Test Title')));
+    await tester.pumpWidget(
+      MaterialApp(home: TopBar(title: const Text('Test Title'))),
+    );
 
     final Finder titleFinder = find.text('Test Title');
     expect(titleFinder, findsOneWidget);
@@ -16,7 +18,7 @@ void main() {
       MaterialApp(
         theme: lightTheme,
         home: TopBar(
-          title: 'Test Title',
+          title: const Text('Test Title'),
           subtitle: const Text('Test Subtitle'),
         ),
       ),
@@ -32,7 +34,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         theme: lightTheme,
-        home: TopBar(title: 'Test Title', backVisible: true),
+        home: TopBar(title: const Text('Test Title'), backVisible: true),
       ),
     );
 
@@ -47,7 +49,7 @@ void main() {
       MaterialApp(
         theme: lightTheme,
         home: TopBar(
-          title: 'Test Title',
+          title: const Text('Test Title'),
           backVisible: true,
           subtitle: const Text('Test Subtitle'),
         ),
