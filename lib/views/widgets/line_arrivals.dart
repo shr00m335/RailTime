@@ -41,12 +41,23 @@ class LineArrivals extends StatelessWidget {
             style: Theme.of(context).textTheme.labelSmall,
           ),
           SizedBox(height: 10.0),
-          ...direction0ArrivalItems,
-          // Generate empty space to maintain same y position for direction 1
-          ...List.generate(
-            3 - direction0ArrivalItems.length,
-            (_) => 0,
-          ).map((_) => SizedBox(height: 60)),
+          ...(direction0ArrivalItems.isNotEmpty
+              ? [
+                ...direction0ArrivalItems,
+                ...List.generate(
+                  3 - direction0ArrivalItems.length,
+                  (_) => 0,
+                ).map((_) => SizedBox(height: 60)),
+              ]
+              : [
+                Center(
+                  child: Text(
+                    'No information. Please check station board',
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                ),
+                SizedBox(height: 158),
+              ]),
           // Direction 1
           Text(line.direction1, style: Theme.of(context).textTheme.bodyMedium),
           Text(
