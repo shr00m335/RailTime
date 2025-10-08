@@ -1,17 +1,21 @@
 import 'package:flutter/cupertino.dart';
+import 'package:railtime/model/arrival_model.dart';
 import 'package:railtime/model/lat_lon.dart';
 import 'package:railtime/model/repository/database_repository.dart';
 import 'package:railtime/model/services/location_service.dart';
 import 'package:railtime/model/services/station_service.dart';
+import 'package:railtime/model/services/tfl_api_service.dart';
 import 'package:railtime/model/station_model.dart';
 
 class LiveInfoViewModel with ChangeNotifier {
   final DatabaseRepository _databaseRepository = DatabaseRepository();
   final StationService _stationService = StationService();
   final LocationService _locationService = LocationService();
+  final TflApiService _tflApiService = TflApiService();
 
   LatLon? _currentLocation;
   StationModel? _nearestStation;
+  Map<String, List<ArrivalModel>>? _arrivals;
 
   StationModel? get nearestStation {
     return _nearestStation;
@@ -19,6 +23,10 @@ class LiveInfoViewModel with ChangeNotifier {
 
   LatLon? get currentLocation {
     return _currentLocation;
+  }
+
+  Map<String, List<ArrivalModel>>? get arrivals {
+    return _arrivals;
   }
 
   Future<void> getNearestStation() async {
@@ -31,6 +39,13 @@ class LiveInfoViewModel with ChangeNotifier {
         _currentLocation!,
       );
     }
+    notifyListeners();
+    await getArrivals();
+  }
+
+  Future<void> getArrivals() async {
+    if (_nearestStation == null) return;
+    _arrivals = await _tflApiService.getArrivals(_nearestStation!);
     notifyListeners();
   }
 }
