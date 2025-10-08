@@ -1,3 +1,4 @@
+import 'package:railtime/constants/line_constants.dart';
 import 'package:railtime/model/line_model.dart';
 import 'package:railtime/model/station_model.dart';
 
@@ -26,7 +27,7 @@ class ArrivalModel {
     Map<String, dynamic> dbMap,
     LineModel line,
     StationModel? destination,
-    int direction,
+    int? direction,
   ) {
     String platform = dbMap['platformName'].toString();
 
@@ -34,7 +35,10 @@ class ArrivalModel {
       dbMap['vehicleId'].toString(),
       line,
       platform.substring(platform.length - 1),
-      direction,
+      direction ??
+          (dbMap.keys.contains('direction')
+              ? (LineConstants.directions[line.id]?[dbMap['direction']] ?? -1)
+              : -1),
       destination,
       dbMap['towards']?.toString() ?? '',
       DateTime.parse(dbMap['expectedArrival'].toString()),
