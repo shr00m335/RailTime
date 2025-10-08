@@ -116,4 +116,22 @@ void main() {
       expect(sequences['940GZZLUMVL'], 14);
     });
   });
+
+  group('getStationsRelatedToHubId Tests', () {
+    test('Get Paddington stations', () async {
+      final List<StationModel> stations = await repository
+          .getStationsRelatedToHubId('HUBPAD');
+      expect(stations.length, 4);
+      expect(stations[0].id, '940GZZLUPAC');
+      expect(stations[1].id, '940GZZLUPAH');
+      expect(stations[2].id, '910GPADTLL');
+      expect(stations[3].id, '910GPADTON');
+    });
+
+    test('Non existing hub id', () async {
+      final List<StationModel> stations = await repository
+          .getStationsRelatedToHubId('HUBPAD1');
+      expect(stations.length, 0);
+    });
+  });
 }

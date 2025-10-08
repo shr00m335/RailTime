@@ -168,6 +168,35 @@ class DatabaseRepository {
     };
   }
 
+  /// Get all stations related to [hubId]
+  ///
+  /// Return a list of [StationModel] related to [hubId]
+  Future<List<StationModel>> getStationsRelatedToHubId(String hubId) async {
+    final Database db = await database;
+    final List<dynamic> queryResult = await db.query(
+      'Stations',
+      columns: ['*'],
+      where: 'parent = ?',
+      whereArgs: [hubId],
+    );
+
+    final List<String> stationIds =
+        queryResult.map((x) => x['id'].toString()).toList();
+    final Map<String, List<LineModel>> lines = {
+      for (String stationId in stationIds)
+        stationId: await getLinesOfStationId(stationId),
+    };
+
+    return queryResult
+        .map(
+          (dbMap) => StationModel.fromDatabaseMap(
+            dbMap,
+            lines[dbMap['id'].toString()] ?? [],
+          ),
+        )
+        .toList();
+  }
+
   /// Get a list of stopping sequence of [stationIds] on [lineId]
   ///
   /// Return a map in the format of {[stationId]: sequence}
