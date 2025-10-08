@@ -64,3 +64,7 @@ After having a rough design of the app, I started setting up the Flutter project
 For the font to use, I found the [LondonTube](https://www.fontspace.com/london-tube-font-f2717) which looks similar to the font used in London Tube stations.
 
 Then, I set up the navigation using BottomNavigationBar and created a Top Bar widget to show the information of the current page.
+
+## Day 4
+
+Set up the database storing stations, lines, timetables information in flutter. It is a SQLite Database and is accessed in flutter using [sqflite](https://pub.dev/packages/sqflite).
