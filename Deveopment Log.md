@@ -56,3 +56,11 @@ This page shows all the stations<br>
 
 The details page show the arrival of trains at that station<br>
 ![alt text](<assets/Station Details.png> "Station Details")
+
+## Day 3
+
+After having a rough design of the app, I started setting up the Flutter project and creating the top bar. I set up the Flutter project using the MVVM structure.
+
+For the font to use, I found the [LondonTube](https://www.fontspace.com/london-tube-font-f2717) which looks similar to the font used in London Tube stations.
+
+Then, I set up the navigation using BottomNavigationBar and created a Top Bar widget to show the information of the current page.
