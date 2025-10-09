@@ -22,7 +22,15 @@ class StationModel {
 
   List<LineModel> get lines {
     if (isHub) {
-      return children.expand((station) => station.lines).toList();
+      final Set<String> lineIds = {};
+      return children.expand((station) => station.lines).where((line) {
+        if (lineIds.contains(line.id)) {
+          return false;
+        } else {
+          lineIds.add(line.id);
+          return true;
+        }
+      }).toList();
     } else {
       return _lines;
     }
