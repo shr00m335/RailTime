@@ -2,13 +2,23 @@ import 'package:railtime/model/lat_lon.dart';
 import 'package:railtime/model/line_model.dart';
 
 class StationModel {
+  final bool isHub;
   final String id;
   final String name;
   final List<LineModel> lines;
   final LatLon location;
   final String parentId;
+  final List<StationModel> children;
 
-  StationModel(this.id, this.name, this.lines, this.location, this.parentId);
+  StationModel(
+    this.id,
+    this.name,
+    this.lines,
+    this.location,
+    this.parentId,
+    this.isHub,
+    this.children,
+  );
 
   /// A function to convert the result query from the database to a [StationModel]
   ///
@@ -23,6 +33,28 @@ class StationModel {
       lines,
       LatLon(dbMap['lat'], dbMap['lon']),
       dbMap['parent'],
+      false,
+      [],
+    );
+  }
+
+  /// A function to create a hub with [id], [name] and [children]
+  ///
+  /// [lines] with be empty
+  /// [location] with be one of the children location
+  static StationModel createHub(
+    String id,
+    String name,
+    List<StationModel> children,
+  ) {
+    return StationModel(
+      id,
+      name,
+      [],
+      children.first.location,
+      '',
+      true,
+      children,
     );
   }
 }
