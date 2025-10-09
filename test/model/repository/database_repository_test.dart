@@ -134,4 +134,15 @@ void main() {
       expect(stations.length, 0);
     });
   });
+
+  group('getHubNameByHubId Tests', () {
+    test('Test with normal case', () async {
+      final String name = await repository.getHubNameByHubId('HUBPAD');
+      expect(name, 'Paddington');
+    });
+    test('Test if hub id not exists', () async {
+      final String name = await repository.getHubNameByHubId('HUBPAD1');
+      expect(name, '');
+    });
+  });
 }

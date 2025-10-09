@@ -218,4 +218,18 @@ class DatabaseRepository {
         dbMap['station_id'].toString(): dbMap['sequence'],
     };
   }
+
+  /// Get the name of [hubId]
+  ///
+  /// Return the hub's name if one is found, empty string otherwise
+  Future<String> getHubNameByHubId(String hubId) async {
+    final Database db = await database;
+    final List<dynamic> queryResult = await db.query(
+      'Hubs',
+      columns: ['name'],
+      where: 'id = ?',
+      whereArgs: [hubId],
+    );
+    return queryResult.firstOrNull?['name'] ?? '';
+  }
 }
