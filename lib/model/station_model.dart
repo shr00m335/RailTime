@@ -5,7 +5,7 @@ class StationModel {
   final bool isHub;
   final String id;
   final String name;
-  final List<LineModel> lines;
+  final List<LineModel> _lines;
   final LatLon location;
   final String parentId;
   final List<StationModel> children;
@@ -13,12 +13,20 @@ class StationModel {
   StationModel(
     this.id,
     this.name,
-    this.lines,
+    this._lines,
     this.location,
     this.parentId,
     this.isHub,
     this.children,
   );
+
+  List<LineModel> get lines {
+    if (isHub) {
+      return children.expand((station) => station.lines).toList();
+    } else {
+      return _lines;
+    }
+  }
 
   /// A function to convert the result query from the database to a [StationModel]
   ///
