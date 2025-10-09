@@ -8,22 +8,30 @@ class StationService {
   ///
   /// Return [StationModel] if a station is found, null otherwise
   /// If station is related to other station, return a [StationMode] hub instead
-  Future<StationModel?> getStation(String stationId) async {
-    final StationModel? station = await DatabaseRepository().getStationById(
-      stationId,
-    );
-    if (station == null) return null;
+  Future<Map<String, StationModel>> getStations(List<String> stationIds) async {
+    final Map<String, StationModel> stationEntries = await DatabaseRepository()
+        .getStationsByIds(stationIds);
 
-    if (station.parentId.isEmpty) {
-      return station;
-    } else {
-      final String hubName = await DatabaseRepository().getHubNameByHubId(
-        station.parentId,
-      );
-      final List<StationModel> children = await DatabaseRepository()
-          .getStationsRelatedToHubId(station.parentId);
-      return StationModel.createHub(station.parentId, hubName, children);
+    final Map<String, StationModel> stations = {};
+
+    for (MapEntry<String, StationModel> entry in stationEntries.entries) {
+      final station = entry.value;
+      if (station.parentId.isEmpty) {
+        stations[entry.key] = station;
+      } else {
+        final String hubName = await DatabaseRepository().getHubNameByHubId(
+          station.parentId,
+        );
+        final List<StationModel> children = await DatabaseRepository()
+            .getStationsRelatedToHubId(station.parentId);
+        stations[entry.key] = StationModel.createHub(
+          station.parentId,
+          hubName,
+          children,
+        );
+      }
     }
+    return stations;
   }
 
   /// Get the nearest station to a given [location] within [maxDistance]
@@ -53,7 +61,8 @@ class StationService {
             )
             .key;
     // Get station from station id
-    final StationModel? nearestStation = await getStation(nearestStationId);
+    final StationModel? nearestStation =
+        (await getStations([nearestStationId]))[nearestStationId];
     return nearestStation;
   }
 }

@@ -54,30 +54,61 @@ void main() {
     });
   });
 
-  group('getStation Tests', () {
+  group('getStations Tests', () {
     test('test with non-hub station', () async {
-      StationModel? station = await service.getStation(
+      final Map<String, StationModel> station = await service.getStations([
         '940GZZLUEMB',
-      ); // Embankment
-      expect(station!.name, 'Embankment');
-      expect(station.isHub, false);
-      expect(station.children.length, 0);
+      ]); // Embankment
+      expect(station.length, 1);
+      expect(station['940GZZLUEMB']!.name, 'Embankment');
+      expect(station['940GZZLUEMB']!.isHub, false);
+      expect(station['940GZZLUEMB']!.children.length, 0);
+    });
+    test('test with 2 non-hub stations', () async {
+      final Map<String, StationModel> station = await service.getStations([
+        '940GZZLUEMB',
+        '940GZZLUKPK',
+      ]); // Embankment
+      expect(station.length, 2);
+      expect(station['940GZZLUEMB']!.name, 'Embankment');
+      expect(station['940GZZLUKPK']!.name, 'Kilburn Park');
+    });
+    test('test with 1 hub and 1 non-hub stations', () async {
+      final Map<String, StationModel> station = await service.getStations([
+        '940GZZLUPAH',
+        '940GZZLUKPK',
+      ]); // Embankment
+      expect(station.length, 2);
+      expect(station['940GZZLUPAH']!.name, 'Paddington');
+      expect(station['940GZZLUPAH']!.isHub, true);
+      expect(station['940GZZLUKPK']!.name, 'Kilburn Park');
+      expect(station['940GZZLUKPK']!.isHub, false);
+    });
+    test('test with 1 existing and 1 non-existing stations', () async {
+      final Map<String, StationModel> station = await service.getStations([
+        '940GZZLUPAH1',
+        '940GZZLUKPK',
+      ]); // Embankment
+      expect(station.length, 1);
+      expect(station['940GZZLUKPK']!.name, 'Kilburn Park');
+      expect(station['940GZZLUKPK']!.isHub, false);
     });
 
     test('test with hub station', () async {
-      StationModel? station = await service.getStation(
+      Map<String, StationModel> station = await service.getStations([
         '940GZZLUPAH',
-      ); // Embankment
-      expect(station!.name, 'Paddington');
-      expect(station.isHub, true);
-      expect(station.lines.length, 0);
-      expect(station.children.length, 4);
+      ]); // Paddington
+      expect(station.length, 1);
+      expect(station['940GZZLUPAH']!.name, 'Paddington');
+      expect(station['940GZZLUPAH']!.isHub, true);
+      expect(station['940GZZLUPAH']!.lines.length, 5);
+      expect(station['940GZZLUPAH']!.children.length, 4);
     });
     test('test with non-existing station', () async {
-      StationModel? station = await service.getStation(
+      Map<String, StationModel> station = await service.getStations([
         '940GZZLUPAH1',
-      ); // Embankment
-      expect(station, null);
+      ]); // Embankment
+      expect(station.length, 0);
     });
   });
 }
