@@ -37,7 +37,9 @@ void main() {
         targetLatLon,
       );
       expect(nearestStation != null, true); // Should return a station
-      expect(nearestStation!.id, '940GZZLUEUS'); // Should be Euston station
+      expect(nearestStation!.id, 'HUBEUS'); // Should be Euston station
+      expect(nearestStation.isHub, true); // Should be a hub
+      expect(nearestStation.children.length, 2); // Should have 2 children
     });
 
     test('test getNearestStation out of range', () async {

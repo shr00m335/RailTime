@@ -53,8 +53,7 @@ class StationService {
             )
             .key;
     // Get station from station id
-    final StationModel? nearestStation = await DatabaseRepository()
-        .getStationById(nearestStationId);
+    final StationModel? nearestStation = await getStation(nearestStationId);
     return nearestStation;
   }
 }
