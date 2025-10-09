@@ -51,4 +51,31 @@ void main() {
       expect(nearestStation, null); // Should not return any station
     });
   });
+
+  group('getStation Tests', () {
+    test('test with non-hub station', () async {
+      StationModel? station = await service.getStation(
+        '940GZZLUEMB',
+      ); // Embankment
+      expect(station!.name, 'Embankment');
+      expect(station.isHub, false);
+      expect(station.children.length, 0);
+    });
+
+    test('test with hub station', () async {
+      StationModel? station = await service.getStation(
+        '940GZZLUPAH',
+      ); // Embankment
+      expect(station!.name, 'Paddington');
+      expect(station.isHub, true);
+      expect(station.lines.length, 0);
+      expect(station.children.length, 4);
+    });
+    test('test with non-existing station', () async {
+      StationModel? station = await service.getStation(
+        '940GZZLUPAH1',
+      ); // Embankment
+      expect(station, null);
+    });
+  });
 }

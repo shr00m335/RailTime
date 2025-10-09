@@ -4,6 +4,28 @@ import 'package:railtime/model/repository/database_repository.dart';
 import 'package:railtime/model/station_model.dart';
 
 class StationService {
+  /// Get the station by id
+  ///
+  /// Return [StationModel] if a station is found, null otherwise
+  /// If station is related to other station, return a [StationMode] hub instead
+  Future<StationModel?> getStation(String stationId) async {
+    final StationModel? station = await DatabaseRepository().getStationById(
+      stationId,
+    );
+    if (station == null) return null;
+
+    if (station.parentId.isEmpty) {
+      return station;
+    } else {
+      final String hubName = await DatabaseRepository().getHubNameByHubId(
+        station.parentId,
+      );
+      final List<StationModel> children = await DatabaseRepository()
+          .getStationsRelatedToHubId(station.parentId);
+      return StationModel.createHub(station.parentId, hubName, children);
+    }
+  }
+
   /// Get the nearest station to a given [location] within [maxDistance]
   ///
   /// [maxDistance] in km or miles
