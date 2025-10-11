@@ -12,6 +12,28 @@ class ArrivalModel {
   final DateTime scheduledArrival;
   final DateTime estimatedArrival;
 
+  @override
+  bool operator ==(Object other) {
+    return other is ArrivalModel &&
+        headcode == other.headcode &&
+        line.id == other.line.id &&
+        platform == other.platform &&
+        estimatedArrival.millisecondsSinceEpoch ==
+            other.estimatedArrival.millisecondsSinceEpoch &&
+        (destination?.id ?? destinationText) ==
+            (other.destination?.id ?? destinationText);
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    headcode,
+    line.id,
+    platform,
+    direction,
+    destination?.id ?? destinationText,
+    estimatedArrival.millisecondsSinceEpoch,
+  );
+
   const ArrivalModel(
     this.headcode,
     this.line,
