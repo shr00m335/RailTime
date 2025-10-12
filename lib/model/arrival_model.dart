@@ -56,11 +56,16 @@ class ArrivalModel {
     return ArrivalModel(
       dbMap['vehicleId'].toString(),
       line,
-      platform.substring(platform.length - 1),
-      direction ??
-          (dbMap.keys.contains('direction')
+      platform.split(' ').last,
+      line.id == 'circle'
+          ? (dbMap.keys.contains('direction')
               ? (LineConstants.directions[line.id]?[dbMap['direction']] ?? -1)
-              : -1),
+              : 1)
+          : direction ??
+              (dbMap.keys.contains('direction')
+                  ? (LineConstants.directions[line.id]?[dbMap['direction']] ??
+                      -1)
+                  : -1),
       destination,
       dbMap['towards']?.toString() ?? '',
       DateTime.parse(dbMap['expectedArrival'].toString()),
