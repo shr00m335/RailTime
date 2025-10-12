@@ -55,18 +55,24 @@ class TflApiService {
               .toList();
       final Map<String, StationModel> destinations = await _stationService
           .getStations(destinationIds);
+      final Set<String> lineIds =
+          response
+              .map((dbMap) => dbMap['lineId']?.toString())
+              .whereType<String>()
+              .toSet();
       final List<Map<String, int>> directionsList = await Future.wait(
-        station.lines.map(
-          (line) => _lineService.getDirectionsByDestinations(
-            line.id,
-            station.id,
+        lineIds.map(
+          (lineId) => _lineService.getDirectionsByDestinations(
+            lineId,
+            stationId,
             destinationIds,
           ),
         ),
       );
+
       final Map<String, Map<String, int>> directions = {
-        for (int i = 0; i < station.lines.length; i++)
-          station.lines[i].id: directionsList[i],
+        for (int i = 0; i < lineIds.length; i++)
+          lineIds.elementAt(i): directionsList[i],
       };
 
       for (Map<String, dynamic> dbMap in response) {
