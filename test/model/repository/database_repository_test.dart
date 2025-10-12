@@ -145,4 +145,84 @@ void main() {
       expect(name, '');
     });
   });
+
+  group('getTripId Tests', () {
+    test('Test with getting trip id exactly on time', () async {
+      DateTime targetDateTime = DateTime(2025, 10, 12, 17, 31); // Sunday, 17:31
+      String lineId = 'district';
+      String stationId = '940GZZLUECT';
+      String destinationId = '940GZZLUUPM';
+      String? tripId = await repository.getTripId(
+        lineId,
+        stationId,
+        destinationId,
+        targetDateTime,
+        0,
+      );
+      expect(tripId, 'dis-1320');
+    });
+    test('Test with getting trip id with 3 mins delay', () async {
+      DateTime targetDateTime = DateTime(
+        2025,
+        10,
+        8,
+        9,
+        37,
+      ); // Wednesday, 17:31
+      String lineId = 'liberty';
+      String stationId = '910GROMFORD';
+      String destinationId = '910GROMFORD';
+      String? tripId = await repository.getTripId(
+        lineId,
+        stationId,
+        destinationId,
+        targetDateTime,
+        300,
+      ); // Test with 5 mins time range
+      expect(tripId, 'lib-63');
+    });
+    test(
+      'Test with getting trip id with 3 mins delay into the next day',
+      () async {
+        DateTime targetDateTime = DateTime(
+          2025,
+          10,
+          8,
+          0,
+          1,
+        ); // Wednesday, 00:01, Expected, Tuesday, 23:59
+        String lineId = 'mildmay';
+        String stationId = '910GHGHI';
+        String destinationId = '910GWLSDJHL';
+        String? tripId = await repository.getTripId(
+          lineId,
+          stationId,
+          destinationId,
+          targetDateTime,
+          300,
+        ); // Test with 5 mins time range
+        expect(tripId, 'mild-91');
+      },
+    );
+    test('Test with getting trip id outside time range', () async {
+      DateTime targetDateTime = DateTime(
+        2025,
+        10,
+        11,
+        23,
+        4,
+      ); // Saturday, 23:04, Expected, 23:05
+      String lineId = 'bakerloo';
+      String stationId = '940GZZLURGP';
+      String destinationId = '940GZZLUQPS';
+      String? tripId = await repository.getTripId(
+        lineId,
+        stationId,
+        destinationId,
+        targetDateTime,
+        0,
+      ); // Test with 5 mins time range
+      expect(tripId, null);
+    });
+  });
 }

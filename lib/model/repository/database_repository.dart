@@ -7,6 +7,7 @@ import 'package:railtime/model/lat_lon.dart';
 import 'package:railtime/model/line_model.dart';
 import 'package:railtime/model/station_model.dart';
 import 'package:railtime/utils/database_utils.dart';
+import 'package:railtime/utils/date_time_utils.dart';
 import 'package:sqflite/sqflite.dart';
 
 /// A singleton class that handles CRUD operaion of the database
@@ -231,5 +232,71 @@ class DatabaseRepository {
       whereArgs: [hubId],
     );
     return queryResult.firstOrNull?['name'] ?? '';
+  }
+
+  /// Get trip id by [lineId], [stationId], [destinationId] and [time]
+  /// It will get the nearest trip arrival at [stationId] at [time] within [timeRange]
+  ///
+  /// [timeRange] in seconds
+  Future<String?> getTripId(
+    String lineId,
+    String stationId,
+    String destinationId,
+    DateTime time,
+    int timeRange,
+  ) async {
+    final Database db = await database;
+    final int targetSeconds = DateTimeUtils.datetimeToSeconds(time);
+    final int minSeconds =
+        targetSeconds - timeRange > 0
+            ? targetSeconds - timeRange
+            : 86400 - timeRange - targetSeconds;
+    final int weekday = 1 << (7 - time.weekday);
+
+    List<dynamic> queryResult;
+
+    // Query two days if the time range span over two days
+    if (minSeconds > targetSeconds) {
+      queryResult = await db.query(
+        'Timetables',
+        columns: ['trip_id'],
+        where: '''
+              line_id = ? AND 
+              stop_id = ? AND 
+              ((service & ? != 0 AND departure_time BETWEEN ? AND ?) OR 
+              (service & ? != 0 AND departure_time BETWEEN ? AND ?))''',
+        whereArgs: [
+          lineId,
+          stationId,
+          weekday,
+          minSeconds,
+          86400 + targetSeconds,
+          weekday << 1,
+          0,
+          targetSeconds,
+        ],
+      );
+    } else {
+      queryResult = await db.query(
+        'Timetables',
+        columns: ['trip_id'],
+        where:
+            'line_id = ? AND stop_id = ? AND (service & ?) != 0 AND departure_time BETWEEN ? AND ?',
+        whereArgs: [lineId, stationId, weekday, minSeconds, targetSeconds],
+      );
+    }
+
+    print(queryResult);
+
+    final List<dynamic> tripIdQueryResult = await db.query(
+      'Timetables',
+      columns: ['trip_id'],
+      where:
+          'trip_id IN (${DatabaseUtils.generateInParameters(queryResult)}) AND is_last = 1 AND stop_id = ?',
+      whereArgs: [...queryResult.map((x) => x['trip_id']), destinationId],
+      limit: 1,
+    );
+
+    return tripIdQueryResult.firstOrNull?['trip_id'];
   }
 }
