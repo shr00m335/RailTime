@@ -9,4 +9,12 @@ void main() {
       expect(result, '19:27');
     });
   });
+
+  group('datetimeToSeconds Tests', () {
+    test('test datetimeToSeconds', () {
+      DateTime dt = DateTime(2025, 09, 25, 19, 27);
+      int result = DateTimeUtils.datetimeToSeconds(dt);
+      expect(result, 70020);
+    });
+  });
 }
