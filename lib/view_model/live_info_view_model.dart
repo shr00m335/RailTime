@@ -15,7 +15,7 @@ class LiveInfoViewModel with ChangeNotifier {
 
   LatLon? _currentLocation;
   StationModel? _nearestStation;
-  Map<String, Set<ArrivalModel>>? _arrivals;
+  Map<String, List<ArrivalModel>>? _arrivals;
 
   StationModel? get nearestStation {
     return _nearestStation;
@@ -25,7 +25,7 @@ class LiveInfoViewModel with ChangeNotifier {
     return _currentLocation;
   }
 
-  Map<String, Set<ArrivalModel>>? get arrivals {
+  Map<String, List<ArrivalModel>>? get arrivals {
     return _arrivals;
   }
 

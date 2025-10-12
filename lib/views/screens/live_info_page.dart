@@ -49,7 +49,7 @@ class _LiveInfoPageState extends State<LiveInfoPage> {
   Widget build(BuildContext context) {
     final StationModel? nearestStation =
         Provider.of<LiveInfoViewModel>(context).nearestStation;
-    final Map<String, Set<ArrivalModel>>? arrivals =
+    final Map<String, List<ArrivalModel>>? arrivals =
         Provider.of<LiveInfoViewModel>(context).arrivals;
 
     return Column(
@@ -89,7 +89,7 @@ class _LiveInfoPageState extends State<LiveInfoPage> {
                               .map(
                                 (line) => LineArrivals(
                                   line: line,
-                                  arrivals: arrivals[line.id]?.toList() ?? [],
+                                  arrivals: arrivals[line.id] ?? [],
                                 ),
                               )
                               .toList(),
