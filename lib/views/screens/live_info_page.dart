@@ -27,9 +27,7 @@ class _LiveInfoPageState extends State<LiveInfoPage> {
   void _goToPage(int index) {
     _pageController.animateToPage(
       index,
-      duration: Duration(
-        milliseconds: (_pageController.page!.floor() - index).abs() * 200,
-      ),
+      duration: Duration(milliseconds: 200),
       curve: Easing.linear,
     );
   }
