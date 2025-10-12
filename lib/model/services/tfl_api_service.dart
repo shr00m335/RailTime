@@ -82,9 +82,13 @@ class TflApiService {
 
         // Skip line does not exists in the station
         // Circle mislabelled as hammersmith and city line and vice versa
-        // Also skip the lines that already processed to prevent duplication
-        // e.g. Paddington station has two elizabeth line stations which return the same response
-        if (line == null) continue;
+        // Also ignore service that terminates at the current station
+        if (line == null ||
+            stationIds.contains(
+              dbMap['destinationNaptanId']?.toString() ?? '',
+            )) {
+          continue;
+        }
         final ArrivalModel arrival = ArrivalModel.fromDatabaseMap(
           dbMap,
           line,
