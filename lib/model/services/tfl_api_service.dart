@@ -33,7 +33,7 @@ class TflApiService {
     }
   }
 
-  Future<Map<String, Set<ArrivalModel>>> getArrivals(
+  Future<Map<String, List<ArrivalModel>>> getArrivals(
     StationModel station,
   ) async {
     // Convert station ids as a lists
@@ -98,6 +98,16 @@ class TflApiService {
         }
       }
     }
-    return arrivals;
+
+    Map<String, List<ArrivalModel>> sortedArrivals = {};
+
+    // Sort arrival time in ascending order
+    for (String lineId in arrivals.keys) {
+      sortedArrivals[lineId] = arrivals[lineId]!.sorted(
+        (a, b) => a.estimatedArrival.compareTo(b.estimatedArrival),
+      );
+    }
+
+    return sortedArrivals;
   }
 }
