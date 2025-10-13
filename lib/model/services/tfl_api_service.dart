@@ -4,9 +4,11 @@ import 'package:collection/collection.dart';
 import 'package:http/http.dart' as http;
 import 'package:railtime/model/arrival_model.dart';
 import 'package:railtime/model/line_model.dart';
+import 'package:railtime/model/repository/database_repository.dart';
 import 'package:railtime/model/services/line_service.dart';
 import 'package:railtime/model/services/station_service.dart';
 import 'package:railtime/model/station_model.dart';
+import 'package:railtime/model/trip_model.dart';
 
 class TflApiService {
   final String _baseUrl = 'https://api.tfl.gov.uk';
@@ -113,5 +115,28 @@ class TflApiService {
     }
 
     return sortedArrivals;
+  }
+
+  Future<List<TripArrivalModel>> getVehicleArrivals(String vehicleId) async {
+    final Uri endpoint = Uri.parse('$_baseUrl/Vehicle/$vehicleId/Arrivals');
+    List<dynamic>? response = await _httpGet(endpoint);
+    if (response == null) return [];
+    final List<String> stationIds =
+        response
+            .map((x) => x['naptanId']?.toString())
+            .whereType<String>()
+            .toList();
+    final Map<String, StationModel> stations = await DatabaseRepository()
+        .getStationsByIds(stationIds);
+
+    return response
+        .where((apiMap) => stations.containsKey(apiMap['naptanId']))
+        .map(
+          (apiMap) => TripArrivalModel.fromApiMap(
+            apiMap,
+            stations[apiMap['naptanId']]!,
+          ),
+        )
+        .toList();
   }
 }

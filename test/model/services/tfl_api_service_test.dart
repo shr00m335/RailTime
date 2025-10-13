@@ -9,6 +9,7 @@ import 'package:railtime/model/repository/database_repository.dart';
 import 'package:railtime/model/services/station_service.dart';
 import 'package:railtime/model/services/tfl_api_service.dart';
 import 'package:railtime/model/station_model.dart';
+import 'package:railtime/model/trip_model.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import './tfl_api_service_test.mocks.dart';
@@ -592,5 +593,342 @@ void main() {
     expect(result['circle']!.length, 2);
     expect(result['hammersmith-city']!.length, 2);
     expect(result['elizabeth']!.length, 2);
+  });
+
+  group('getVehicleArrivals Tests', () {
+    test('Get vehicle arrivals normal', () async {
+      when(
+        mockHttpClient.get(
+          Uri.parse('https://api.tfl.gov.uk/Vehicle/202510138006424/Arrivals'),
+        ),
+      ).thenAnswer(
+        (_) async => http.Response('''[{
+    "\$type": "Tfl.Api.Presentation.Entities.Prediction, Tfl.Api.Presentation.Entities",
+    "id": "833185887",
+    "operationType": 1,
+    "vehicleId": "202510138006424",
+    "naptanId": "910GIVER",
+    "stationName": "Iver Rail Station",
+    "lineId": "elizabeth",
+    "lineName": "Elizabeth line",
+    "platformName": "4",
+    "direction": "inbound",
+    "bearing": "",
+    "destinationNaptanId": "910GPADTON",
+    "destinationName": "London Paddington Rail Station",
+    "timestamp": "2025-10-13T22:09:56.1345023Z",
+    "timeToStation": 2104,
+    "currentLocation": "",
+    "towards": "",
+    "expectedArrival": "2025-10-13T22:45:00Z",
+    "timeToLive": "2025-10-13T22:43:56Z",
+    "modeName": "elizabeth-line",
+    "timing": {
+      "\$type": "Tfl.Api.Presentation.Entities.PredictionTiming, Tfl.Api.Presentation.Entities",
+      "countdownServerAdjustment": "00:00:00",
+      "source": "0001-01-01T00:00:00",
+      "insert": "0001-01-01T00:00:00",
+      "read": "2025-10-13T22:09:56.621Z",
+      "sent": "2025-10-13T22:09:56Z",
+      "received": "0001-01-01T00:00:00"
+    }
+  },
+  {
+    "\$type": "Tfl.Api.Presentation.Entities.Prediction, Tfl.Api.Presentation.Entities",
+    "id": "1303966089",
+    "operationType": 1,
+    "vehicleId": "202510138006424",
+    "naptanId": "910GWDRYTON",
+    "stationName": "West Drayton Rail Station",
+    "lineId": "elizabeth",
+    "lineName": "Elizabeth line",
+    "platformName": "4",
+    "direction": "inbound",
+    "bearing": "",
+    "destinationNaptanId": "910GPADTON",
+    "destinationName": "London Paddington Rail Station",
+    "timestamp": "2025-10-13T22:09:56.1345023Z",
+    "timeToStation": 2284,
+    "currentLocation": "",
+    "towards": "",
+    "expectedArrival": "2025-10-13T22:48:00Z",
+    "timeToLive": "2025-10-13T22:47:00Z",
+    "modeName": "elizabeth-line",
+    "timing": {
+      "\$type": "Tfl.Api.Presentation.Entities.PredictionTiming, Tfl.Api.Presentation.Entities",
+      "countdownServerAdjustment": "00:00:00",
+      "source": "0001-01-01T00:00:00",
+      "insert": "0001-01-01T00:00:00",
+      "read": "2025-10-13T22:10:01.206Z",
+      "sent": "2025-10-13T22:09:56Z",
+      "received": "0001-01-01T00:00:00"
+    }
+  },
+  {
+    "\$type": "Tfl.Api.Presentation.Entities.Prediction, Tfl.Api.Presentation.Entities",
+    "id": "-631879722",
+    "operationType": 1,
+    "vehicleId": "202510138006424",
+    "naptanId": "910GHAYESAH",
+    "stationName": "Hayes & Harlington Rail Station",
+    "lineId": "elizabeth",
+    "lineName": "Elizabeth line",
+    "platformName": "4",
+    "direction": "inbound",
+    "bearing": "",
+    "destinationNaptanId": "910GPADTON",
+    "destinationName": "London Paddington Rail Station",
+    "timestamp": "2025-10-13T22:09:56.1345023Z",
+    "timeToStation": 2524,
+    "currentLocation": "",
+    "towards": "",
+    "expectedArrival": "2025-10-13T22:52:00Z",
+    "timeToLive": "2025-10-13T22:52:10Z",
+    "modeName": "elizabeth-line",
+    "timing": {
+      "\$type": "Tfl.Api.Presentation.Entities.PredictionTiming, Tfl.Api.Presentation.Entities",
+      "countdownServerAdjustment": "00:00:00",
+      "source": "0001-01-01T00:00:00",
+      "insert": "0001-01-01T00:00:00",
+      "read": "2025-10-13T22:10:11.561Z",
+      "sent": "2025-10-13T22:09:56Z",
+      "received": "0001-01-01T00:00:00"
+    }
+  },
+  {
+    "\$type": "Tfl.Api.Presentation.Entities.Prediction, Tfl.Api.Presentation.Entities",
+    "id": "-972560405",
+    "operationType": 1,
+    "vehicleId": "202510138006424",
+    "naptanId": "910GSTHALL",
+    "stationName": "Southall Rail Station",
+    "lineId": "elizabeth",
+    "lineName": "Elizabeth line",
+    "platformName": "4",
+    "direction": "inbound",
+    "bearing": "",
+    "destinationNaptanId": "910GPADTON",
+    "destinationName": "London Paddington Rail Station",
+    "timestamp": "2025-10-13T22:09:56.1345023Z",
+    "timeToStation": 2764,
+    "currentLocation": "",
+    "towards": "",
+    "expectedArrival": "2025-10-13T22:56:00Z",
+    "timeToLive": "2025-10-13T22:55:00Z",
+    "modeName": "elizabeth-line",
+    "timing": {
+      "\$type": "Tfl.Api.Presentation.Entities.PredictionTiming, Tfl.Api.Presentation.Entities",
+      "countdownServerAdjustment": "00:00:00",
+      "source": "0001-01-01T00:00:00",
+      "insert": "0001-01-01T00:00:00",
+      "read": "2025-10-13T22:10:01.034Z",
+      "sent": "2025-10-13T22:09:56Z",
+      "received": "0001-01-01T00:00:00"
+    }
+  },
+  {
+    "\$type": "Tfl.Api.Presentation.Entities.Prediction, Tfl.Api.Presentation.Entities",
+    "id": "-1321112789",
+    "operationType": 1,
+    "vehicleId": "202510138006424",
+    "naptanId": "910GEALINGB",
+    "stationName": "Ealing Broadway Rail Station",
+    "lineId": "elizabeth",
+    "lineName": "Elizabeth line",
+    "platformName": "4",
+    "direction": "inbound",
+    "bearing": "",
+    "destinationNaptanId": "910GPADTON",
+    "destinationName": "London Paddington Rail Station",
+    "timestamp": "2025-10-13T22:09:56.1345023Z",
+    "timeToStation": 3064,
+    "currentLocation": "",
+    "towards": "",
+    "expectedArrival": "2025-10-13T23:01:00Z",
+    "timeToLive": "2025-10-13T23:00:59Z",
+    "modeName": "elizabeth-line",
+    "timing": {
+      "\$type": "Tfl.Api.Presentation.Entities.PredictionTiming, Tfl.Api.Presentation.Entities",
+      "countdownServerAdjustment": "00:00:00",
+      "source": "0001-01-01T00:00:00",
+      "insert": "0001-01-01T00:00:00",
+      "read": "2025-10-13T22:09:59.627Z",
+      "sent": "2025-10-13T22:09:56Z",
+      "received": "0001-01-01T00:00:00"
+    }
+  },
+  {
+    "\$type": "Tfl.Api.Presentation.Entities.Prediction, Tfl.Api.Presentation.Entities",
+    "id": "-495471183",
+    "operationType": 1,
+    "vehicleId": "202510138006424",
+    "naptanId": "910GPADTON",
+    "stationName": "London Paddington Rail Station",
+    "lineId": "elizabeth",
+    "lineName": "Elizabeth line",
+    "platformName": "12",
+    "direction": "",
+    "bearing": "",
+    "destinationNaptanId": "910GPADTON",
+    "destinationName": "London Paddington Rail Station",
+    "timestamp": "2025-10-13T22:09:56.1345023Z",
+    "timeToStation": 3604,
+    "currentLocation": "",
+    "towards": "",
+    "expectedArrival": "2025-10-13T23:10:00Z",
+    "timeToLive": "2025-10-13T22:10:07Z",
+    "modeName": "elizabeth-line",
+    "timing": {
+      "\$type": "Tfl.Api.Presentation.Entities.PredictionTiming, Tfl.Api.Presentation.Entities",
+      "countdownServerAdjustment": "00:00:00",
+      "source": "0001-01-01T00:00:00",
+      "insert": "0001-01-01T00:00:00",
+      "read": "2025-10-13T22:10:10.063Z",
+      "sent": "2025-10-13T22:09:56Z",
+      "received": "0001-01-01T00:00:00"
+    }
+  },
+  {
+    "\$type": "Tfl.Api.Presentation.Entities.Prediction, Tfl.Api.Presentation.Entities",
+    "id": "-495864400",
+    "operationType": 1,
+    "vehicleId": "202510138006424",
+    "naptanId": "910GPADTLL",
+    "stationName": "Paddington",
+    "lineId": "elizabeth",
+    "lineName": "Elizabeth line",
+    "platformName": "12",
+    "direction": "",
+    "bearing": "",
+    "destinationNaptanId": "910GPADTON",
+    "destinationName": "London Paddington Rail Station",
+    "timestamp": "2025-10-13T22:09:56.1345023Z",
+    "timeToStation": 3604,
+    "currentLocation": "",
+    "towards": "",
+    "expectedArrival": "2025-10-13T23:10:00Z",
+    "timeToLive": "2025-10-13T22:10:15Z",
+    "modeName": "elizabeth-line",
+    "timing": {
+      "\$type": "Tfl.Api.Presentation.Entities.PredictionTiming, Tfl.Api.Presentation.Entities",
+      "countdownServerAdjustment": "00:00:00",
+      "source": "0001-01-01T00:00:00",
+      "insert": "0001-01-01T00:00:00",
+      "read": "2025-10-13T22:10:17.464Z",
+      "sent": "2025-10-13T22:09:56Z",
+      "received": "0001-01-01T00:00:00"
+    }
+  }
+]''', 200),
+      );
+
+      final List<TripArrivalModel> result = await tflApiService
+          .getVehicleArrivals('202510138006424');
+      expect(result.length, 7);
+      expect(result.last.station.id, '910GPADTLL');
+      expect(result.last.platform, '12');
+      expect(result.last.scheduled, null);
+      expect(result.last.actual, 83400);
+    });
+
+    test('Get vehicle arrivals bad request', () async {
+      when(
+        mockHttpClient.get(
+          Uri.parse('https://api.tfl.gov.uk/Vehicle/202510138006424/Arrivals'),
+        ),
+      ).thenAnswer((_) async => http.Response('[]', 400));
+      final List<TripArrivalModel> result = await tflApiService
+          .getVehicleArrivals('202510138006424');
+      expect(result.length, 0);
+    });
+
+    test('Get vehicle arrivals station not found', () async {
+      when(
+        mockHttpClient.get(
+          Uri.parse('https://api.tfl.gov.uk/Vehicle/202510138006424/Arrivals'),
+        ),
+      ).thenAnswer(
+        (_) async => http.Response('''
+          [{
+            "\$type": "Tfl.Api.Presentation.Entities.Prediction, Tfl.Api.Presentation.Entities",
+            "id": "-495864400",
+            "operationType": 1,
+            "vehicleId": "202510138006424",
+            "naptanId": "910GPADTLL1",
+            "stationName": "Paddington",
+            "lineId": "elizabeth",
+            "lineName": "Elizabeth line",
+            "platformName": "12",
+            "direction": "",
+            "bearing": "",
+            "destinationNaptanId": "910GPADTON",
+            "destinationName": "London Paddington Rail Station",
+            "timestamp": "2025-10-13T22:09:56.1345023Z",
+            "timeToStation": 3604,
+            "currentLocation": "",
+            "towards": "",
+            "expectedArrival": "2025-10-13T23:10:00Z",
+            "timeToLive": "2025-10-13T22:10:15Z",
+            "modeName": "elizabeth-line",
+            "timing": {
+              "\$type": "Tfl.Api.Presentation.Entities.PredictionTiming, Tfl.Api.Presentation.Entities",
+              "countdownServerAdjustment": "00:00:00",
+              "source": "0001-01-01T00:00:00",
+              "insert": "0001-01-01T00:00:00",
+              "read": "2025-10-13T22:10:17.464Z",
+              "sent": "2025-10-13T22:09:56Z",
+              "received": "0001-01-01T00:00:00"
+            }
+          }]
+        ''', 200),
+      );
+      final List<TripArrivalModel> result = await tflApiService
+          .getVehicleArrivals('202510138006424');
+      expect(result.length, 0);
+    });
+
+    test('Get vehicle arrivals response no naptan id', () async {
+      when(
+        mockHttpClient.get(
+          Uri.parse('https://api.tfl.gov.uk/Vehicle/202510138006424/Arrivals'),
+        ),
+      ).thenAnswer(
+        (_) async => http.Response('''
+          [{
+            "\$type": "Tfl.Api.Presentation.Entities.Prediction, Tfl.Api.Presentation.Entities",
+            "id": "-495864400",
+            "operationType": 1,
+            "vehicleId": "202510138006424",
+            "stationName": "Paddington",
+            "lineId": "elizabeth",
+            "lineName": "Elizabeth line",
+            "platformName": "12",
+            "direction": "",
+            "bearing": "",
+            "destinationNaptanId": "910GPADTON",
+            "destinationName": "London Paddington Rail Station",
+            "timestamp": "2025-10-13T22:09:56.1345023Z",
+            "timeToStation": 3604,
+            "currentLocation": "",
+            "towards": "",
+            "expectedArrival": "2025-10-13T23:10:00Z",
+            "timeToLive": "2025-10-13T22:10:15Z",
+            "modeName": "elizabeth-line",
+            "timing": {
+              "\$type": "Tfl.Api.Presentation.Entities.PredictionTiming, Tfl.Api.Presentation.Entities",
+              "countdownServerAdjustment": "00:00:00",
+              "source": "0001-01-01T00:00:00",
+              "insert": "0001-01-01T00:00:00",
+              "read": "2025-10-13T22:10:17.464Z",
+              "sent": "2025-10-13T22:09:56Z",
+              "received": "0001-01-01T00:00:00"
+            }
+          }]
+        ''', 200),
+      );
+      final List<TripArrivalModel> result = await tflApiService
+          .getVehicleArrivals('202510138006424');
+      expect(result.length, 0);
+    });
   });
 }
