@@ -6,6 +6,7 @@ import 'package:railtime/model/lat_lon.dart';
 import 'package:railtime/model/line_model.dart';
 import 'package:railtime/model/repository/database_repository.dart';
 import 'package:railtime/model/station_model.dart';
+import 'package:railtime/model/trip_model.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
@@ -259,6 +260,28 @@ void main() {
       ]);
       expect(result.length, 1);
       expect(result['elizabeth']?.name, 'Elizabeth line');
+    });
+  });
+
+  group('getTripById Tests', () {
+    test('Test with a valid id', () async {
+      TripModel? trip = await repository.getTripById('elz-20');
+      expect(trip?.id, 'elz-20');
+      expect(trip?.line.id, 'elizabeth');
+      expect(trip?.service, 124);
+      expect(trip?.origin.id, '910GABWDXR');
+      expect(trip?.destination.id, '910GRDNGSTN');
+      expect(trip?.arrivals.length, 22);
+      expect(trip?.arrivals[5].station.id, '910GLIVSTLL');
+      expect(trip?.arrivals[5].scheduled, 22800);
+      expect(trip?.arrivals[5].actual, 22800);
+      expect(trip?.arrivals[5].platform, null);
+      expect(trip?.arrivals[5].sequence, 6);
+    });
+
+    test('Test with an invalid id', () async {
+      TripModel? trip = await repository.getTripById('elz-2012');
+      expect(trip, null);
     });
   });
 }
