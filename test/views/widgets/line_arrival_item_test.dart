@@ -25,7 +25,7 @@ void main() {
       ),
       '4',
       0,
-      StationModel('123', 'Test Destination', [], LatLon(0, 0), ''),
+      StationModel('123', 'Test Destination', [], LatLon(0, 0), '', false, []),
       '',
       DateTime.now(),
       DateTime(2025, 09, 25, 19, 23),
