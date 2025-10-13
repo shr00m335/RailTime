@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 import 'package:railtime/model/lat_lon.dart';
+import 'package:railtime/model/line_model.dart';
 import 'package:railtime/model/repository/database_repository.dart';
 import 'package:railtime/model/station_model.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -223,6 +224,41 @@ void main() {
         0,
       ); // Test with 5 mins time range
       expect(tripId, null);
+    });
+  });
+
+  group('getLinesByIds Tests', () {
+    test('Test with 1 line id', () async {
+      String lineId = 'bakerloo';
+      Map<String, LineModel> result = await repository.getLinesByIds([lineId]);
+      expect(result.length, 1);
+      expect(result['bakerloo']?.name, 'Bakerloo');
+    });
+
+    test('Test with 2 line id', () async {
+      Map<String, LineModel> result = await repository.getLinesByIds([
+        'bakerloo',
+        'elizabeth',
+      ]);
+      expect(result.length, 2);
+      expect(result['bakerloo']?.name, 'Bakerloo');
+      expect(result['elizabeth']?.name, 'Elizabeth line');
+    });
+
+    test('Test with 1 non-existing id', () async {
+      Map<String, LineModel> result = await repository.getLinesByIds([
+        'bakerloo1',
+      ]);
+      expect(result.length, 0);
+    });
+
+    test('Test with 1 existing and 1 non-existing ids', () async {
+      Map<String, LineModel> result = await repository.getLinesByIds([
+        'bakerloo1',
+        'elizabeth',
+      ]);
+      expect(result.length, 1);
+      expect(result['elizabeth']?.name, 'Elizabeth line');
     });
   });
 }

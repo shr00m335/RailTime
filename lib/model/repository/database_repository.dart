@@ -63,6 +63,24 @@ class DatabaseRepository {
   }
 
   // Lines
+  /// Get all lines of the given [lineIds]
+  ///
+  /// Return a map in format of {lineId: [LineModel]}
+  Future<Map<String, LineModel>> getLinesByIds(List<String> lineIds) async {
+    final Database db = await database;
+
+    final List<dynamic> queryResult = await db.query(
+      'Lines',
+      columns: ['*'],
+      where: 'id IN (${DatabaseUtils.generateInParameters(lineIds)})',
+      whereArgs: lineIds,
+    );
+
+    return {
+      for (Map<String, dynamic> dbMap in queryResult)
+        dbMap['id']: LineModel.fromDatabaseMap(dbMap),
+    };
+  }
 
   /// Get all lines that serve the station with the given [stationId]
   Future<List<LineModel>> getLinesOfStationId(String stationId) async {
