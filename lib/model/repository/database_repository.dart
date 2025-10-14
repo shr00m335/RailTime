@@ -331,6 +331,26 @@ class DatabaseRepository {
         .toList();
   }
 
+  /// Get the destination ids of the given list of [tripIds]
+  ///
+  /// Return a map in the format of {tripId : destination id}
+  Future<Map<String, String>> getTripDesinationIdsByIds(
+    List<String> tripIds,
+  ) async {
+    final db = await database;
+    final queryResult = await db.query(
+      'Timetables',
+      columns: ['trip_id', 'stop_id'],
+      where:
+          'trip_id IN (${DatabaseUtils.generateInParameters(tripIds)}) AND is_last = 1',
+      whereArgs: tripIds,
+    );
+    return {
+      for (Map<String, dynamic> dbMap in queryResult)
+        dbMap['trip_id']: dbMap['stop_id'],
+    };
+  }
+
   /// Get the trip by [tripId]
   ///
   /// Return [TripModel] with [TripArrivalModel] in ascending order of sequences

@@ -264,4 +264,31 @@ void main() {
       expect(trip, []);
     });
   });
+
+  group('getTripDesinationIdsByIds', () {
+    test('Test getTripDesinationIdsByIds normal', () async {
+      List<String> tripIds = ['dis-330', 'dis-331', 'dis-332'];
+      final result = await repository.getTripDesinationIdsByIds(tripIds);
+      expect(result, {
+        'dis-330': '940GZZLUERC',
+        'dis-331': '940GZZLUBKG',
+        'dis-332': '940GZZLUUPM',
+      });
+    });
+
+    test('Test getTripDesinationIdsByIds with 1 trip id not exists', () async {
+      List<String> tripIds = ['dis-330', 'dis-331', 'dis-33223'];
+      final result = await repository.getTripDesinationIdsByIds(tripIds);
+      expect(result, {'dis-330': '940GZZLUERC', 'dis-331': '940GZZLUBKG'});
+    });
+
+    test(
+      'Test getTripDesinationIdsByIds with all trip ids not exist',
+      () async {
+        List<String> tripIds = ['dis-33043', 'dis-33143', 'dis-33223'];
+        final result = await repository.getTripDesinationIdsByIds(tripIds);
+        expect(result, {});
+      },
+    );
+  });
 }
