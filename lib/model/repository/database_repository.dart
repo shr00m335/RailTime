@@ -283,8 +283,6 @@ class DatabaseRepository {
     // Query two days if the time range span over two days
     if (minSeconds > targetSeconds) {
       final int previousWeekday = (weekday << 1) >= 128 ? 1 : weekday << 1;
-      print(minSeconds);
-      print(86400 + targetSeconds);
       queryResult = await db.rawQuery(
         '''
           SELECT trip_id, MIN(ABS(? - departure_time), ABS(? + 86400 - departure_time)) AS diff
@@ -326,8 +324,6 @@ class DatabaseRepository {
         [targetSeconds, lineId, stationId, weekday, minSeconds, targetSeconds],
       );
     }
-
-    print(queryResult);
 
     return queryResult
         .map((dbMap) => dbMap['trip_id']?.toString())
