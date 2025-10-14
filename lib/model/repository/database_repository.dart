@@ -253,70 +253,86 @@ class DatabaseRepository {
     return queryResult.firstOrNull?['name'] ?? '';
   }
 
-  /// Get trip id by [lineId], [stationId], [destinationId] and [time]
-  /// It will get the nearest trip arrival at [stationId] at [time] within [timeRange]
+  /// Get list of trip ids by that satisfy [lineId], [stationId], and within [timeRange] (in seconds) of [time]
   ///
-  /// [timeRange] in seconds
-  Future<String?> getTripId(
+  /// [timeRange] is the maximum seconds be before the given [time], default is 300 seconds
+  /// For example, the [time] is 19:20 and [timeRange] is 300, it will query all arrivals of [lineId] from 19:15 to 19:20
+  /// Time after given [time] will not be considered as trains should not arrival before the scheduled time
+  ///
+  /// Return a list of trip ids that is in the order of closest time to the given [time]
+  Future<List<String>> getTripIdsOfLine(
     String lineId,
     String stationId,
-    String destinationId,
-    DateTime time,
-    int timeRange,
-  ) async {
+    DateTime time, {
+    int timeRange = 300,
+  }) async {
     final Database db = await database;
+
     final int targetSeconds = DateTimeUtils.datetimeToSeconds(time);
     final int minSeconds =
         targetSeconds - timeRange > 0
             ? targetSeconds - timeRange
-            : 86400 - timeRange - targetSeconds;
+            : 86400 - timeRange + targetSeconds;
+
+    // Convert weekday int to binary format
+    // bit 7 represents Monday and bit 0 represents Sunday
     final int weekday = 1 << (7 - time.weekday);
 
     List<dynamic> queryResult;
 
     // Query two days if the time range span over two days
     if (minSeconds > targetSeconds) {
-      queryResult = await db.query(
-        'Timetables',
-        columns: ['trip_id'],
-        where: '''
-              line_id = ? AND 
-              stop_id = ? AND 
-              ((service & ? != 0 AND departure_time BETWEEN ? AND ?) OR 
-              (service & ? != 0 AND departure_time BETWEEN ? AND ?))''',
-        whereArgs: [
+      final int previousWeekday = (weekday << 1) >= 128 ? 1 : weekday << 1;
+      print(minSeconds);
+      print(86400 + targetSeconds);
+      queryResult = await db.rawQuery(
+        '''
+          SELECT trip_id, MIN(ABS(? - departure_time), ABS(? + 86400 - departure_time)) AS diff
+          FROM Timetables
+          WHERE 
+            line_id = ? AND 
+            stop_id = ? AND
+            (
+              (service & ? != 0 AND departure_time BETWEEN ? AND ?) OR
+              (service & ? != 0 AND departure_time BETWEEN ? AND ?)
+            )
+          ORDER BY diff ASC
+        ''',
+        [
+          targetSeconds,
+          targetSeconds,
           lineId,
           stationId,
-          weekday,
+          previousWeekday,
           minSeconds,
           86400 + targetSeconds,
-          weekday << 1,
+          weekday,
           0,
           targetSeconds,
         ],
       );
     } else {
-      queryResult = await db.query(
-        'Timetables',
-        columns: ['trip_id'],
-        where:
-            'line_id = ? AND stop_id = ? AND (service & ?) != 0 AND departure_time BETWEEN ? AND ?',
-        whereArgs: [lineId, stationId, weekday, minSeconds, targetSeconds],
+      queryResult = await db.rawQuery(
+        '''
+          SELECT trip_id, (? - departure_time) AS diff
+          FROM Timetables
+          WHERE 
+            line_id = ? AND 
+            stop_id = ? AND
+            service & ? != 0 AND 
+            departure_time BETWEEN ? AND ?
+          ORDER BY diff ASC
+        ''',
+        [targetSeconds, lineId, stationId, weekday, minSeconds, targetSeconds],
       );
     }
 
     print(queryResult);
 
-    final List<dynamic> tripIdQueryResult = await db.query(
-      'Timetables',
-      columns: ['trip_id'],
-      where:
-          'trip_id IN (${DatabaseUtils.generateInParameters(queryResult)}) AND is_last = 1 AND stop_id = ?',
-      whereArgs: [...queryResult.map((x) => x['trip_id']), destinationId],
-      limit: 1,
-    );
-
-    return tripIdQueryResult.firstOrNull?['trip_id'];
+    return queryResult
+        .map((dbMap) => dbMap['trip_id']?.toString())
+        .whereType<String>()
+        .toList();
   }
 
   /// Get the trip by [tripId]
