@@ -823,7 +823,7 @@ void main() {
       );
 
       final List<TripArrivalModel> result = await tflApiService
-          .getVehicleArrivals('202510138006424');
+          .getVehicleArrivals('202510138006424', 'elizabeth');
       expect(result.length, 7);
       expect(result.last.station.id, '910GPADTLL');
       expect(result.last.platform, '12');
@@ -838,7 +838,7 @@ void main() {
         ),
       ).thenAnswer((_) async => http.Response('[]', 400));
       final List<TripArrivalModel> result = await tflApiService
-          .getVehicleArrivals('202510138006424');
+          .getVehicleArrivals('202510138006424', 'elizabeth');
       expect(result.length, 0);
     });
 
@@ -883,7 +883,7 @@ void main() {
         ''', 200),
       );
       final List<TripArrivalModel> result = await tflApiService
-          .getVehicleArrivals('202510138006424');
+          .getVehicleArrivals('202510138006424', 'elizabeth');
       expect(result.length, 0);
     });
 
@@ -927,8 +927,84 @@ void main() {
         ''', 200),
       );
       final List<TripArrivalModel> result = await tflApiService
-          .getVehicleArrivals('202510138006424');
+          .getVehicleArrivals('202510138006424', 'elizabeth');
       expect(result.length, 0);
+    });
+
+    test('Get vehicle arrivals mixed line ids', () async {
+      when(
+        mockHttpClient.get(
+          Uri.parse('https://api.tfl.gov.uk/Vehicle/202510138006424/Arrivals'),
+        ),
+      ).thenAnswer(
+        (_) async => http.Response('''
+          [{
+            "\$type": "Tfl.Api.Presentation.Entities.Prediction, Tfl.Api.Presentation.Entities",
+            "id": "-495864400",
+            "operationType": 1,
+            "vehicleId": "202510138006424",
+            "naptanId": "910GPADTLL",
+            "stationName": "Paddington",
+            "lineId": "elizabeth",
+            "lineName": "Elizabeth line",
+            "platformName": "12",
+            "direction": "",
+            "bearing": "",
+            "destinationNaptanId": "910GPADTON",
+            "destinationName": "London Paddington Rail Station",
+            "timestamp": "2025-10-13T22:09:56.1345023Z",
+            "timeToStation": 3604,
+            "currentLocation": "",
+            "towards": "",
+            "expectedArrival": "2025-10-13T23:10:00Z",
+            "timeToLive": "2025-10-13T22:10:15Z",
+            "modeName": "elizabeth-line",
+            "timing": {
+              "\$type": "Tfl.Api.Presentation.Entities.PredictionTiming, Tfl.Api.Presentation.Entities",
+              "countdownServerAdjustment": "00:00:00",
+              "source": "0001-01-01T00:00:00",
+              "insert": "0001-01-01T00:00:00",
+              "read": "2025-10-13T22:10:17.464Z",
+              "sent": "2025-10-13T22:09:56Z",
+              "received": "0001-01-01T00:00:00"
+            }
+          },
+          {
+            "\$type": "Tfl.Api.Presentation.Entities.Prediction, Tfl.Api.Presentation.Entities",
+            "id": "-495864400",
+            "operationType": 1,
+            "vehicleId": "202510138006424",
+            "naptanId": "910GPADTLL",
+            "stationName": "Paddington",
+            "lineId": "circle",
+            "lineName": "Circle",
+            "platformName": "12",
+            "direction": "",
+            "bearing": "",
+            "destinationNaptanId": "910GPADTON",
+            "destinationName": "London Paddington Rail Station",
+            "timestamp": "2025-10-13T22:09:56.1345023Z",
+            "timeToStation": 3604,
+            "currentLocation": "",
+            "towards": "",
+            "expectedArrival": "2025-10-13T23:10:00Z",
+            "timeToLive": "2025-10-13T22:10:15Z",
+            "modeName": "elizabeth-line",
+            "timing": {
+              "\$type": "Tfl.Api.Presentation.Entities.PredictionTiming, Tfl.Api.Presentation.Entities",
+              "countdownServerAdjustment": "00:00:00",
+              "source": "0001-01-01T00:00:00",
+              "insert": "0001-01-01T00:00:00",
+              "read": "2025-10-13T22:10:17.464Z",
+              "sent": "2025-10-13T22:09:56Z",
+              "received": "0001-01-01T00:00:00"
+            }
+          }]
+        ''', 200),
+      );
+      final List<TripArrivalModel> result = await tflApiService
+          .getVehicleArrivals('202510138006424', 'elizabeth');
+      expect(result.length, 1);
     });
   });
 }

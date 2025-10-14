@@ -117,7 +117,10 @@ class TflApiService {
     return sortedArrivals;
   }
 
-  Future<List<TripArrivalModel>> getVehicleArrivals(String vehicleId) async {
+  Future<List<TripArrivalModel>> getVehicleArrivals(
+    String vehicleId,
+    String lineId,
+  ) async {
     final Uri endpoint = Uri.parse('$_baseUrl/Vehicle/$vehicleId/Arrivals');
     List<dynamic>? response = await _httpGet(endpoint);
     if (response == null) return [];
@@ -130,7 +133,11 @@ class TflApiService {
         .getStationsByIds(stationIds);
 
     return response
-        .where((apiMap) => stations.containsKey(apiMap['naptanId']))
+        .where(
+          (apiMap) =>
+              apiMap['lineId'] == lineId &&
+              stations.containsKey(apiMap['naptanId']),
+        )
         .map(
           (apiMap) => TripArrivalModel.fromApiMap(
             apiMap,
