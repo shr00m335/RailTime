@@ -322,7 +322,7 @@ class DatabaseRepository {
   /// Get the trip by [tripId]
   ///
   /// Return [TripModel] with [TripArrivalModel] in ascending order of sequences
-  Future<TripModel?> getTripById(String tripId) async {
+  Future<List<TripArrivalModel>> getTripById(String tripId) async {
     final Database db = await database;
     final List<dynamic> queryResult = await db.query(
       'Timetables',
@@ -332,7 +332,7 @@ class DatabaseRepository {
       orderBy: 'stop_sequence',
     );
 
-    if (queryResult.isEmpty) return null;
+    if (queryResult.isEmpty) return [];
 
     final List<String> stationIds =
         queryResult
@@ -352,21 +352,6 @@ class DatabaseRepository {
               ),
             )
             .toList();
-
-    // Get line model from line id
-    final String lineId = queryResult.first['line_id']?.toString() ?? '';
-    final LineModel? line = (await getLinesByIds([lineId]))[lineId];
-    if (line == null) return null;
-
-    final TripModel trip = TripModel(
-      tripId,
-      line,
-      queryResult.first['service'] ?? 127,
-      arrivals.first.station,
-      arrivals.last.station,
-      arrivals,
-    );
-
-    return trip;
+    return arrivals;
   }
 }

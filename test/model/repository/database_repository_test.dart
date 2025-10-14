@@ -265,23 +265,18 @@ void main() {
 
   group('getTripById Tests', () {
     test('Test with a valid id', () async {
-      TripModel? trip = await repository.getTripById('elz-20');
-      expect(trip?.id, 'elz-20');
-      expect(trip?.line.id, 'elizabeth');
-      expect(trip?.service, 124);
-      expect(trip?.origin.id, '910GABWDXR');
-      expect(trip?.destination.id, '910GRDNGSTN');
-      expect(trip?.arrivals.length, 22);
-      expect(trip?.arrivals[5].station.id, '910GLIVSTLL');
-      expect(trip?.arrivals[5].scheduled, 22800);
-      expect(trip?.arrivals[5].actual, 22800);
-      expect(trip?.arrivals[5].platform, null);
-      expect(trip?.arrivals[5].sequence, 6);
+      List<TripArrivalModel> arrivals = await repository.getTripById('elz-20');
+      expect(arrivals.length, 22);
+      expect(arrivals[5].station.id, '910GLIVSTLL');
+      expect(arrivals[5].scheduled, 22800);
+      expect(arrivals[5].actual, 22800);
+      expect(arrivals[5].platform, null);
+      expect(arrivals[5].sequence, 6);
     });
 
     test('Test with an invalid id', () async {
-      TripModel? trip = await repository.getTripById('elz-2012');
-      expect(trip, null);
+      List<TripArrivalModel> trip = await repository.getTripById('elz-2012');
+      expect(trip, []);
     });
   });
 }
