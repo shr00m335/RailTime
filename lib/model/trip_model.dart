@@ -26,9 +26,10 @@ class TripArrivalModel {
   final int? actual;
   final String? platform;
   final int sequence;
-  final bool isStopping;
+  bool isStopping;
+  bool isDeparted = false;
 
-  const TripArrivalModel(
+  TripArrivalModel(
     this.station,
     this.scheduled,
     this.actual,
@@ -44,7 +45,7 @@ class TripArrivalModel {
     return TripArrivalModel(
       station,
       dbMap['departure_time'],
-      dbMap['departure_time'],
+      null,
       null,
       dbMap['stop_sequence'],
       true,
